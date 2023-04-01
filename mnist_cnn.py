@@ -140,3 +140,41 @@ def training_cnn(image, label, learn_rate=0.005):
   grad_back= conv.back_prop(grad_back, learn_rate)
 
   return loss, acc
+
+
+train_images= X_train[:15000]
+train_labels= y_train[:15000]
+test_images= X_test[:1500]
+test_labels = y_test[:1500]
+for epoch1 in range(4):
+  print('epoch %d-->' % (epoch1 + 1))
+
+  shuffle_data = np.random.permutation(len(train_images))
+  train_images= train_images[shuffle_data]
+  train_labels= train_labels[shuffle_data]
+
+  loss=0
+  num_correct=0
+
+  for i, (im, label) in enumerate(zip(train_images,train_labels)):
+    if i % 100 ==0:
+      print('Avg loss %.3f and Accuracy: %d%%' %(loss/100, num_correct))
+      loss=0
+      num_correct = 0
+
+    l1, accu= training_cnn(im,label)
+    loss += l1
+    num_correct+=accu
+
+print('testing')
+
+loss = 0
+num_correct=0
+for im, label in zip(test_images, test_labels):
+  _, l1, accu = cnn_forward_prop(im, label)
+  loss +=l1
+  num_correct += accu
+
+num_tests = len(test_images)
+print('Test Loss',loss/num_tests)
+print('Test Accuracy:', num_correct / num_tests)
